@@ -321,10 +321,61 @@
             </div>
             <div class="tag-chips">
                 
+                
+                <a href="/tags/Apache/" title="Apache: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="Apache" style="background-color: #F9EBEA;">Apache
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" title="漏洞复现: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="漏洞复现" style="background-color: #F5EEF8;">漏洞复现
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
+                
+                <a href="/tags/Vulhub/" title="Vulhub: 1">
+                    <span class="chip center-align waves-effect waves-light
+                             chip-default "
+                            data-tagname="Vulhub" style="background-color: #D5F5E3;">Vulhub
+                        <span class="tag-length">1</span>
+                    </span>
+                </a>
+                
             </div>
         </div>
     </div>
 </div>
+
+    
+    <link rel="stylesheet" type="text/css" href="/libs/jqcloud/jqcloud.css">
+<style type="text/css">
+    #tag-wordcloud {
+        width: 100%;
+        height: 300px;
+    }
+</style>
+
+<div class="container" data-aos="fade-up">
+    <div class="card">
+        <div id="tag-wordcloud" class="card-content"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/libs/jqcloud/jqcloud-1.0.4.min.js"></script>
+<script type="text/javascript">
+    
+
+    $('#tag-wordcloud').jQCloud([{"text":"Apache","weight":1,"link":"/tags/Apache/"},{"text":"漏洞复现","weight":1,"link":"/tags/漏洞复现/"},{"text":"Vulhub","weight":1,"link":"/tags/Vulhub/"}], {
+        autoResize: true
+    });
+</script>
 
     
 
