@@ -450,27 +450,27 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="0x01-Apache-HTTPD-换行解析漏洞（CVE-2017-15715）"><a href="#0x01-Apache-HTTPD-换行解析漏洞（CVE-2017-15715）" class="headerlink" title="0x01 Apache HTTPD 换行解析漏洞（CVE-2017-15715）"></a>0x01 Apache HTTPD 换行解析漏洞（CVE-2017-15715）</h2><p><strong>Apache HTTPD是一款HTTP服务器，它可以通过mod_php来运行PHP网页。其2.4.0~2.4.29版本中存在一个解析漏洞，在解析PHP时，<code>1.php\x0A</code>将被按照PHP后缀进行解析，导致绕过一些服务器的安全策略</strong>。</p>
-<p><img src="D:\Blog\source_posts\图片\image-20220118182439523.png" alt="image-20220118182623867"></p>
+<p><img src="/2022/01/18/apachehttpserver-lou-dong-fu-xian-yu-si-kao/0.png"></p>
 <p>1、尝试从黑盒测试角度去思考，那么一般情况下，遇到文件上传，首先想到的是上传一句话木马，为POST请求。</p>
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span> @<span class="token keyword">eval</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'cmd'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token delimiter important">?></span></span> //普通的一句话木马<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?=</span><span class="token function">phpinfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token delimiter important">?></span></span> //phpinfo函数<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>抓包，发送到Repeater模块，虽然回显为200，但提示bad file</p>
-<p><img src="D:\Blog\source_posts\图片\image-20220118190507240.png" alt="image-20220118190507240"></p>
+<p><img src="/2022/01/18/apachehttpserver-lou-dong-fu-xian-yu-si-kao/1.png"></p>
 <p>思考下后端会不会做了过滤，考虑尝试phtml、php3、php4等，都为bad file</p>
 <p>而当文件后缀格式为图片格式（如png）、文本格式（如txt）时，能够成功上传</p>
 <p>根据复现文章，在1.php后面插入一个<code>\x0A</code>（注意，不能是<code>\x0D\x0A</code>，只能是一个<code>\x0A</code>）</p>
-<p><img src="D:\Blog\source_posts\图片\image-20220118190725089.png" alt="image-20220118190725089"></p>
+<p><img src="/2022/01/18/apachehttpserver-lou-dong-fu-xian-yu-si-kao/2.png"></p>
 <p>访问<code>http://192.168.177.142:8080/1.php%0a</code></p>
-<p><img src="D:\Blog\source_posts\图片\image-20220118190854562.png" alt="image-20220118190854562"></p>
+<p><img src="/2022/01/18/apachehttpserver-lou-dong-fu-xian-yu-si-kao/3.png"></p>
 <p>复现成功</p>
 <h4 id="tips："><a href="#tips：" class="headerlink" title="tips："></a>tips：</h4><p>1、\x0A表示换行符”\n”</p>
 <p>2、\x0D表示回车符</p>
 <p>3、16进制的20代表空格</p>
 <p>二者不同</p>
 <h4 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h4><p>所以为什么会出现这个漏洞呢？而又为何如此复现呢？</p>
-<p><img src="D:\Blog\source_posts\图片\image-20220118205335110.png" alt="image-20220118205335110"></p>
+<p><img src="/2022/01/18/apachehttpserver-lou-dong-fu-xian-yu-si-kao/4.png"></p>
 <p>如图，这是apache的默认配置文件，在这里我们需要关注这个地方</p>
 <pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token operator">&lt;</span>FileMatch \<span class="token operator">.</span><span class="token class-name type-declaration">php</span>$<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
